@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Carevia - Registration</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #087F8C;
+            --dark: #12343B;
+            --light: #F2FAFA;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .navbar {
+            background-color: var(--primary);
+        }
+
+        .navbar-brand {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+        }
+
+        .card-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+        }
+
+        .card-header h3 {
+            color: white;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--dark);
+        }
+
+        .form-label {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(8, 127, 140, 0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark);
+            border-color: var(--dark);
+        }
+
+        a {
+            color: var(--primary);
+        }
+
+        a:hover {
+            color: var(--dark);
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+
+        <div class="container">
+
+            <a class="navbar-brand" href="index.html">Carevia</a>
+
+            <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMenu"
+                aria-controls="navbarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMenu">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="aboutus.html">About</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Registration Form -->
+    <div class="container my-5">
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-8 col-lg-6">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-header text-center">
+
+                        <h3 class="mb-1">Create an Account</h3>
+
+                        <p class="mb-0">Your Health, Your Time.</p>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <form id="registerForm">
+
+                            <!-- Full Name -->
+                            <div class="mb-3">
+
+                                <label for="fullname" class="form-label">
+                                    Full Name
+                                </label>
+
+                                <input type="text" class="form-control"
+                                    id="fullname" name="fullname"
+                                    placeholder="Enter your full name"
+                                    required>
+
+                            </div>
+
+
+                            <!-- Email -->
+                            <div class="mb-3">
+
+                                <label for="email" class="form-label">
+                                    Email Address
+                                </label>
+
+                                <input type="email" class="form-control"
+                                    id="email" name="email"
+                                    placeholder="Enter your email address"
+                                    required>
+
+                            </div>
+
+
+                            <!-- Phone Number -->
+                            <div class="mb-3">
+
+                                <label for="phone" class="form-label">
+                                    Phone Number
+                                </label>
+
+                                <input type="tel" class="form-control"
+                                    id="phone" name="phone"
+                                    placeholder="Enter your 10-digit phone number"
+                                    pattern="[0-9]{10}"
+                                    title="Enter a 10-digit phone number"
+                                    required>
+
+                            </div>
+
+
+                            <!-- Date of Birth -->
+                            <div class="mb-3">
+
+                                <label for="dob" class="form-label">
+                                    Date of Birth
+                                </label>
+
+                                <input type="date" class="form-control"
+                                    id="dob" name="dob"
+                                    required>
+
+                            </div>
+
+
+                            <!-- Gender -->
+                            <div class="mb-3">
+
+                                <label for="gender" class="form-label">
+                                    Gender
+                                </label>
+
+                                <select class="form-select"
+                                    id="gender" name="gender" required>
+
+                                    <option value="">Select Gender</option>
+                                    <option value="female">Female</option>
+                                    <option value="male">Male</option>
+                                    <option value="other">Other</option>
+                                    <option value="prefer-not-to-say">
+                                        Prefer not to say
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- Password -->
+                            <div class="mb-3">
+
+                                <label for="password" class="form-label">
+                                    Password
+                                </label>
+
+                                <input type="password" class="form-control"
+                                    id="password" name="password"
+                                    placeholder="Create a password"
+                                    minlength="6"
+                                    required>
+
+                            </div>
+
+
+                            <!-- Confirm Password -->
+                            <div class="mb-3">
+
+                                <label for="confirmPassword" class="form-label">
+                                    Confirm Password
+                                </label>
+
+                                <input type="password" class="form-control"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    placeholder="Enter your password again"
+                                    required>
+
+                            </div>
+
+
+                            <!-- Terms and Conditions -->
+                            <div class="form-check mb-3">
+
+                                <input type="checkbox"
+                                    class="form-check-input"
+                                    id="terms" name="terms" required>
+
+                                <label class="form-check-label" for="terms">
+                                    I agree to the terms and conditions.
+                                </label>
+
+                            </div>
+
+
+                            <!-- Error Message -->
+                            <p id="errorMessage" class="error-message"></p>
+
+
+                            <!-- Register Button -->
+                            <button type="submit"
+                                class="btn btn-primary w-100">
+
+                                Register
+
+                            </button>
+
+                        </form>
+
+
+                        <!-- Login Link -->
+                        <p class="text-center mt-3 mb-0">
+
+                            Already have an account?
+
+                            <a href="login.html">Login</a>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Back to Home -->
+                <div class="text-center mt-3">
+
+                    <a href="index.html" class="text-decoration-none">
+                        Back to Home
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="text-center py-3">
+
+        <p class="mb-0">
+            &copy; 2026 Carevia. All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- Form Validation -->
+    <script>
+
+        const form = document.getElementById("registerForm");
+
+        form.addEventListener("submit", function(event) {
+
+            const password = document.getElementById("password").value;
+
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
+
+            const errorMessage =
+                document.getElementById("errorMessage");
+
+            errorMessage.textContent = "";
+
+            if (password !== confirmPassword) {
+
+                event.preventDefault();
+
+                errorMessage.textContent =
+                    "Passwords do not match. Please try again.";
+
+            } else {
+
+                event.preventDefault();
+
+                alert("Registration form submitted successfully!");
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
+
