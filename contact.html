@@ -272,6 +272,23 @@
             width: 100%;
             font-size: 14px;
             margin-top: 5px;
+            min-height: 1.4em;
+        }
+
+        .formMessage.success {
+            color: #0f7b4c;
+            background-color: #e7f8ef;
+            border: 1px solid #b7e4cc;
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .formMessage.error {
+            color: #b42318;
+            background-color: #fdecec;
+            border: 1px solid #f2c2c0;
+            border-radius: 8px;
+            padding: 12px 14px;
         }
 
         /* Responsive design */
@@ -439,7 +456,7 @@
             <!-- Right Section: Contact Form -->
             <section class="col right">
 
-                <form class="messageform" id="contactForm">
+                <form class="messageform" id="contactForm" action="contact.php" method="POST" novalidate>
 
                     <!-- Name -->
                     <div class="inputGroup halfwidth">
@@ -507,44 +524,64 @@
     <!-- Bootstrap JavaScript (required for the mobile navbar toggle) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Contact form JavaScript -->
-    <script>
-        // Select the contact form
-        const contactForm = document.getElementById("contactForm");
 
-        // Select the message area
-        const formMessage = document.getElementById("formMessage");
+<!-- Contact form JavaScript -->
+<script>
+    const contactForm = document.getElementById("contactForm");
+    const formMessage = document.getElementById("formMessage");
+    const submitButton = contactForm.querySelector('button[type="submit"]');
 
-        // Handle form submission
-        contactForm.addEventListener("submit", function (event) {
+    function showFormMessage(text, type) {
+        formMessage.textContent = text;
+        formMessage.classList.remove("success", "error");
+        formMessage.classList.add(type);
+    }
 
-            // Prevent page refresh
-            event.preventDefault();
+    contactForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-            // Get form values
-            const name = document.getElementById("name").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const subject = document.getElementById("subject").value.trim();
-            const message = document.getElementById("message").value.trim();
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const subject = document.getElementById("subject").value.trim();
+        const message = document.getElementById("message").value.trim();
 
-            // Check all fields
-            if (!name || !email || !subject || !message) {
-                formMessage.textContent = "Please fill in all fields.";
-                formMessage.style.color = "#dc3545";
-                return;
+        if (!name || !email || !subject || !message) {
+            showFormMessage("Please fill in all fields.", "error");
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showFormMessage("Please enter a valid email address.", "error");
+            return;
+        }
+
+        submitButton.disabled = true;
+
+        try {
+            const response = await fetch("contact.php", {
+                method: "POST",
+                body: new FormData(contactForm),
+                headers: {
+                    Accept: "application/json"
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.ok) {
+                showFormMessage(data.message, "success");
+                contactForm.reset();
+            } else {
+                showFormMessage(data.message || "Unable to submit your message right now. Please try again.", "error");
             }
+        } catch (error) {
+            showFormMessage("Unable to submit your message right now. Please try again.", "error");
+        } finally {
+            submitButton.disabled = false;
+        }
+    });
+</script>
 
-            // Display success message
-            formMessage.textContent =
-                "Thank you, " + name +
-                "! Your message has been checked successfully.";
-
-            formMessage.style.color = "#087F8C";
-
-            // Reset the form
-            contactForm.reset();
-        });
-    </script>
 
 </body>
 </html>

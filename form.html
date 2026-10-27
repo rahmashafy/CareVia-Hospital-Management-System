@@ -92,9 +92,25 @@
             color: white;
         }
 
-        .error-message {
-            color: #dc3545;
+        .form-message {
             font-size: 14px;
+            min-height: 1.4em;
+        }
+
+        .form-message.success {
+            color: #0f7b4c;
+            background-color: #e7f8ef;
+            border: 1px solid #b7e4cc;
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .form-message.error {
+            color: #b42318;
+            background-color: #fdecec;
+            border: 1px solid #f2c2c0;
+            border-radius: 8px;
+            padding: 12px 14px;
         }
     </style>
 
@@ -162,7 +178,7 @@
 
                     <div class="card-body">
 
-                        <form id="registerForm">
+                        <form id="registerForm" action="register.php" method="POST" novalidate>
 
                             <!-- Full Name -->
                             <div class="mb-3">
@@ -174,6 +190,7 @@
                                 <input type="text" class="form-control"
                                     id="fullname" name="fullname"
                                     placeholder="Enter your full name"
+                                    maxlength="150" autocomplete="name"
                                     required>
 
                             </div>
@@ -189,6 +206,7 @@
                                 <input type="email" class="form-control"
                                     id="email" name="email"
                                     placeholder="Enter your email address"
+                                    maxlength="150" autocomplete="email"
                                     required>
 
                             </div>
@@ -205,6 +223,7 @@
                                     id="phone" name="phone"
                                     placeholder="Enter your 10-digit phone number"
                                     pattern="[0-9]{10}"
+                                    maxlength="10" inputmode="numeric" autocomplete="tel"
                                     title="Enter a 10-digit phone number"
                                     required>
 
@@ -220,6 +239,7 @@
 
                                 <input type="date" class="form-control"
                                     id="dob" name="dob"
+                                    min="1000-01-01" autocomplete="bday"
                                     required>
 
                             </div>
@@ -259,6 +279,7 @@
                                     id="password" name="password"
                                     placeholder="Create a password"
                                     minlength="6"
+                                    maxlength="72" autocomplete="new-password"
                                     required>
 
                             </div>
@@ -275,6 +296,7 @@
                                     id="confirmPassword"
                                     name="confirmPassword"
                                     placeholder="Enter your password again"
+                                    maxlength="72" autocomplete="new-password"
                                     required>
 
                             </div>
@@ -294,8 +316,9 @@
                             </div>
 
 
-                            <!-- Error Message -->
-                            <p id="errorMessage" class="error-message"></p>
+                            <!-- Form status message -->
+                            <p id="formMessage" class="form-message" role="status"
+                                aria-live="polite" aria-atomic="true" tabindex="-1"></p>
 
 
                             <!-- Register Button -->
@@ -354,40 +377,115 @@
     </script>
 
 
-    <!-- Form Validation -->
+    <!-- Registration form JavaScript -->
     <script>
+        const registerForm = document.getElementById("registerForm");
+        const formMessage = document.getElementById("formMessage");
+        const submitButton = registerForm.querySelector('button[type="submit"]');
+        const dobInput = document.getElementById("dob");
+        dobInput.max = new Intl.DateTimeFormat("en-CA", {
+            timeZone: "Asia/Colombo", year: "numeric", month: "2-digit", day: "2-digit"
+        }).format(new Date());
 
-        const form = document.getElementById("registerForm");
+        function showFormMessage(text, type) {
+            formMessage.textContent = text;
+            formMessage.classList.remove("success", "error");
+            formMessage.classList.add(type);
+            formMessage.focus({ preventScroll: true });
+            formMessage.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
 
-        form.addEventListener("submit", function(event) {
-
-            const password = document.getElementById("password").value;
-
-            const confirmPassword =
-                document.getElementById("confirmPassword").value;
-
-            const errorMessage =
-                document.getElementById("errorMessage");
-
-            errorMessage.textContent = "";
-
-            if (password !== confirmPassword) {
-
-                event.preventDefault();
-
-                errorMessage.textContent =
-                    "Passwords do not match. Please try again.";
-
-            } else {
-
-                event.preventDefault();
-
-                alert("Registration form submitted successfully!");
-
+        registerForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            if (submitButton.disabled) {
+                return;
             }
 
-        });
+            const fullname = document.getElementById("fullname").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const dob = document.getElementById("dob").value.trim();
+            const gender = document.getElementById("gender").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const terms = document.getElementById("terms").checked;
 
+            if (!fullname || !email || !phone || !dob || !gender || !password || !confirmPassword) {
+                showFormMessage("Please fill in all fields.", "error");
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showFormMessage("Please enter a valid email address.", "error");
+                return;
+            }
+
+            if (!/^[0-9]{10}$/.test(phone)) {
+                showFormMessage("Please enter a valid 10-digit phone number.", "error");
+                return;
+            }
+
+            if (!dobInput.validity.valid || dob < dobInput.min || dob > dobInput.max) {
+                showFormMessage("Date of birth must be a valid date on or before today.", "error");
+                return;
+            }
+
+            if (fullname.length > 150 || email.length > 150) {
+                showFormMessage("Full name and email must each be 150 characters or fewer.", "error");
+                return;
+            }
+
+            if (password.length < 6) {
+                showFormMessage("Password must be at least 6 characters.", "error");
+                return;
+            }
+
+            if (new TextEncoder().encode(password).length > 72) {
+                showFormMessage("Password must be 72 bytes or fewer. Use fewer characters.", "error");
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showFormMessage("Passwords do not match. Please try again.", "error");
+                return;
+            }
+
+            if (!terms) {
+                showFormMessage("Please agree to the terms and conditions.", "error");
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = "Registering...";
+            registerForm.setAttribute("aria-busy", "true");
+            formMessage.textContent = "";
+            formMessage.classList.remove("success", "error");
+
+            try {
+                const response = await fetch(registerForm.action, {
+                    method: "POST",
+                    body: new FormData(registerForm),
+                    headers: {
+                        Accept: "application/json"
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.ok) {
+                    showFormMessage(data.message, "success");
+                    registerForm.reset();
+                } else {
+                    showFormMessage(data.message || "Unable to complete registration right now. Please try again.", "error");
+                }
+            } catch (error) {
+                showFormMessage("Unable to complete registration right now. Please try again.", "error");
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = "Register";
+                registerForm.removeAttribute("aria-busy");
+            }
+        });
     </script>
 
 </body>
