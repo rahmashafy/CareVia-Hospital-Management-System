@@ -195,6 +195,7 @@ function e($value)
                         <th>Date of Birth</th>
                         <th>Gender</th>
                         <th>Registered At</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
@@ -212,6 +213,18 @@ function e($value)
                             <td><?= e($row['dob']) ?></td>
                             <td><?= e($row['gender']) ?></td>
                             <td><?= e($row['created_at']) ?></td>
+                            <td>
+    <a href="update.php?id=<?php echo (int)$row['id']; ?>"
+       class="btn btn-primary btn-sm">
+        Edit
+    </a>
+
+    <a href="delete.php?id=<?php echo (int)$row['id']; ?>"
+       class="btn btn-danger btn-sm"
+       onclick="return confirm('Are you sure you want to delete this user?');">
+        Delete
+    </a>
+</td>
                         </tr>
 
                     <?php endwhile; ?>
