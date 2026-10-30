@@ -191,7 +191,8 @@
                                     id="fullname" name="fullname"
                                     placeholder="Enter your full name"
                                     maxlength="150" autocomplete="name"
-                                    required>
+                                    required  oninput="this.value = this.value.toUpperCase()"
+    required>
 
                             </div>
 
@@ -225,7 +226,8 @@
                                     pattern="[0-9]{10}"
                                     maxlength="10" inputmode="numeric" autocomplete="tel"
                                     title="Enter a 10-digit phone number"
-                                    required>
+                                    required oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+    required>
 
                             </div>
 
@@ -317,8 +319,13 @@
 
 
                             <!-- Form status message -->
-                            <p id="formMessage" class="form-message" role="status"
-                                aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+                            <div id="formMessage"
+     class="alert d-none"
+     role="status"
+     aria-live="polite"
+     aria-atomic="true"
+     tabindex="-1">
+</div>
 
 
                             <!-- Register Button -->
@@ -388,12 +395,28 @@
         }).format(new Date());
 
         function showFormMessage(text, type) {
-            formMessage.textContent = text;
-            formMessage.classList.remove("success", "error");
-            formMessage.classList.add(type);
-            formMessage.focus({ preventScroll: true });
-            formMessage.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }
+
+    formMessage.textContent = text;
+
+    formMessage.classList.remove(
+        "d-none",
+        "alert-success",
+        "alert-danger"
+    );
+
+    if (type === "success") {
+        formMessage.classList.add("alert-success");
+    } else {
+        formMessage.classList.add("alert-danger");
+    }
+
+    formMessage.focus({ preventScroll: true });
+
+    formMessage.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
 
         registerForm.addEventListener("submit", async function (event) {
             event.preventDefault();
@@ -459,7 +482,13 @@
             submitButton.textContent = "Registering...";
             registerForm.setAttribute("aria-busy", "true");
             formMessage.textContent = "";
-            formMessage.classList.remove("success", "error");
+
+formMessage.classList.add("d-none");
+
+formMessage.classList.remove(
+    "alert-success",
+    "alert-danger"
+);
 
             try {
                 const response = await fetch(registerForm.action, {
@@ -486,6 +515,54 @@
                 registerForm.removeAttribute("aria-busy");
             }
         });
+        
+document.addEventListener("DOMContentLoaded", function () {
+
+    const fullname = document.getElementById("fullname");
+    const email = document.getElementById("email");
+    const phone = document.getElementById("phone");
+
+    // Full Name Validation
+    fullname.addEventListener("input", function () {
+
+        if (this.value.trim().length < 3) {
+            this.classList.add("is-invalid");
+            this.classList.remove("is-valid");
+        } else {
+            this.classList.remove("is-invalid");
+            this.classList.add("is-valid");
+        }
+
+    });
+
+    // Email Validation
+    email.addEventListener("input", function () {
+
+        if (!this.validity.valid || this.value.trim() === "") {
+            this.classList.add("is-invalid");
+            this.classList.remove("is-valid");
+        } else {
+            this.classList.remove("is-invalid");
+            this.classList.add("is-valid");
+        }
+
+    });
+
+    // Phone Validation
+    phone.addEventListener("input", function () {
+
+        if (!/^[0-9]{10}$/.test(this.value)) {
+            this.classList.add("is-invalid");
+            this.classList.remove("is-valid");
+        } else {
+            this.classList.remove("is-invalid");
+            this.classList.add("is-valid");
+        }
+
+    });
+
+});
+
     </script>
 
 </body>

@@ -184,20 +184,26 @@ function e($value)
 
         <div class="table-responsive">
 
-            <table class="table table-bordered table-striped table-hover align-middle">
+            <table  id="entriesTable" class="table table-bordered table-striped table-hover align-middle">
 
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Date of Birth</th>
-                        <th>Gender</th>
-                        <th>Registered At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+    <tr>
+        <th>ID</th>
+        <th onclick="sortTable(1)" style="cursor:pointer;">
+            Full Name ↕
+        </th>
+        <th onclick="sortTable(2)" style="cursor:pointer;">
+            Email ↕
+        </th>
+        <th onclick="sortTable(3)" style="cursor:pointer;">
+            Phone ↕
+        </th>
+        <th>Date of Birth</th>
+        <th>Gender</th>
+        <th>Registered At</th>
+        <th>Actions</th>
+    </tr>
+</thead>
 
                 <tbody>
 
@@ -219,11 +225,13 @@ function e($value)
         Edit
     </a>
 
-    <a href="delete.php?id=<?php echo (int)$row['id']; ?>"
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this user?');">
-        Delete
-    </a>
+    <a href="#"
+   class="btn btn-danger btn-sm"
+   data-bs-toggle="modal"
+   data-bs-target="#deleteModal"
+   data-delete-url="delete.php?id=<?php echo (int)$row['id']; ?>">
+   Delete
+</a>
 </td>
                         </tr>
 
@@ -253,6 +261,84 @@ function e($value)
 
 </div>
 
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to delete this user?
+                This action cannot be undone.
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <a href="#" id="confirmDeleteBtn"
+                   class="btn btn-danger">
+                    Yes, Delete
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+let sortDirections = {};
+
+function sortTable(columnIndex) {
+
+    const table = document.getElementById("entriesTable");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    // Empty table check
+    if (rows.length === 0 || rows[0].cells.length <= columnIndex) {
+        return;
+    }
+
+    // Toggle sorting direction
+    sortDirections[columnIndex] = !sortDirections[columnIndex];
+
+    const ascending = sortDirections[columnIndex];
+
+    rows.sort((rowA, rowB) => {
+
+        const valueA = rowA.cells[columnIndex].innerText.trim().toLowerCase();
+        const valueB = rowB.cells[columnIndex].innerText.trim().toLowerCase();
+
+        return ascending
+            ? valueA.localeCompare(valueB, undefined, { numeric: true })
+            : valueB.localeCompare(valueA, undefined, { numeric: true });
+    });
+
+    rows.forEach(row => tbody.appendChild(row));
+}
+// Connect Delete Button with Bootstrap Modal
+document.querySelectorAll('[data-bs-target="#deleteModal"]').forEach(button => {
+
+    button.addEventListener('click', function () {
+
+        const deleteUrl = this.getAttribute('data-delete-url');
+
+        document.getElementById('confirmDeleteBtn').href = deleteUrl;
+
+    });
+
+});
+</script>
 </body>
 </html>
 
